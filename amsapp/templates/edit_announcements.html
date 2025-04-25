@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+
+<head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Add Announcements</title>
+
+
+
+  <!-- Custom CSS -->
+  <style>
+    .card-title {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50; /* Custom Green Button */
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+
+    /* Responsive Sidebar Collapse */
+    @media (max-width: 991px) {
+      #sidebar {
+        position: fixed;
+        z-index: 1050;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+          <div class="row">
+            <div class="col-md-8 mb-12 grid-margin stretch-card">
+              <div class="card shadow mb-4">
+                <div class="card-body">
+                  <h4 class="card-title">Edit Announcements Details</h4>
+
+                  <form  id="AnnForm" method="POST"  action="{% url 'update_announcements' an_id=no.id %}">
+                    {% csrf_token %}
+ <div class="form-group">
+                  <label>Faculty Name</label>
+
+                       <select class="form-control"  name="facname" required>
+                   <option   value="{{no.facult_name}}">{{no.facult_name}}</option>
+
+       {% for d in fac %}
+
+       <option>{{ d.f_name }}</option>
+    {% endfor %}
+  </select>
+                   </div>
+                    <div class="form-group">
+                      <label>Message to be Notified</label>
+                      <input type="text" class="form-control" id="c" name="msg" placeholder="Enter Course name" required value="{{no.notificat}}">
+                    </div>
+
+
+ <div class="form-group">
+                      <label>Date Created</label>
+                      <input type="date" class="form-control" id="cd" name="create" placeholder="Created Date" required value="{{no.created}}">
+                    </div>
+
+
+
+
+
+                        <button type="submit" class="btn btn-primary  d-block mx-auto" style="background-color:#5454C4; width: 150px; border-radius:5px;">
+    Update
+</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+
+      </div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+   <script>
+    // Function to validate the form
+    document.getElementById('AnnForm').addEventListener('submit', function(event) {
+      event.preventDefault();  // Prevent form submission
+
+      // Check if all required fields are filled
+      let formIsValid = true;
+      const requiredFields = document.querySelectorAll('[required]');
+
+      requiredFields.forEach(function(field) {
+        if (!field.value.trim()) {
+          formIsValid = false;
+        }
+      });
+
+      if (formIsValid) {
+        // Show SweetAlert for successful form submission
+        Swal.fire({
+          title: 'Success!',
+          text: 'Announcements details have been updated successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            document.getElementById('AnnForm').submit();  // Submit form if user confirms
+          }
+        });
+      } else {
+        // Show SweetAlert for validation error
+        Swal.fire({
+          title: 'Error!',
+          text: 'Please fill in all required fields.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  </script>
+  <!-- Plugins: JS -->
+
+</body>
+</html>
+{% endblock %}

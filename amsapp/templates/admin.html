@@ -1,0 +1,414 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>AMS Admin</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{% static 'admin/vendors/feather/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/vendors/css/vendor.bundle.base.css' %}">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="{% static 'admin/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/js/select.dataTables.min.css' %}">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{% static 'admin/css/vertical-layout-light/style.css' %}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{% static 'admin/images/favicon.png' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="index.html"><img src="{% static 'admin/images/logo.svg' %}" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{% static 'admin/images/logo-mini.svg' %}" alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+          <ul class="navbar-nav mr-lg-2 ">
+  <li class="nav-item nav-search ">
+    <div class="input-group ">
+      <div class="input-group-prepend hover-cursor bg-light" id="navbar-search-icon">
+        <span class="input-group-text  text-dark" id="search">
+          <i class="icon-search"></i>
+        </span>
+      </div>
+      <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
+    </div>
+  </li>
+</ul>
+
+        <ul class="navbar-nav navbar-nav-right">
+
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              <img src="{% static 'admin/images/faces/face28.jpg' %}" alt="profile"/>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item">
+                <i class="ti-settings text-primary"></i>
+                Settings
+              </a>
+                {% if user.is_authenticated %}
+
+    <a href="{% url 'delete_logout' %}" class="dropdown-item">
+        <i class="ti-power-off text-primary"></i>Logout</a>
+{% endif %}
+
+            </div>
+          </li>
+
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+
+
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <!-- Department List -->
+<!--<li class="nav-item">-->
+<!--    <a class="nav-link" data-toggle="collapse" href="#department" aria-expanded="false" aria-controls="department">-->
+<!--        <i class="fas fa-building menu-icon"></i>-->
+<!--        <span class="menu-title">Department List</span>-->
+<!--        <i class="menu-arrow"></i>-->
+<!--    </a>-->
+<!--    <div class="collapse" id="department">-->
+<!--        <ul class="nav flex-column sub-menu">-->
+<!--            <li class="nav-item"> <a class="nav-link" href="">Add Department</a></li>-->
+<!--            <li class="nav-item"> <a class="nav-link" href="">View Department</a></li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--</li>-->
+
+<!--&lt;!&ndash; Course List &ndash;&gt;-->
+          <li class="nav-item">
+    <a class="nav-link" href="{% url 'adminpage' %}" aria-expanded="false" aria-controls="">
+        <i class="fas fa-home menu-icon"></i>
+        <span class="menu-title">Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#course" aria-expanded="false" aria-controls="course">
+        <i class="fas fa-book menu-icon"></i>
+        <span class="menu-title">Course List</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="course">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_course' %}">Add Course Details</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_course' %}">View Course Details</a></li>
+        </ul>
+    </div>
+</li>
+
+
+
+
+
+            <li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#faculty" aria-expanded="false" aria-controls="faculty">
+        <i class="fas fa-user-tie menu-icon"></i>
+        <span class="menu-title">Faculty Details</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="faculty">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_faculty' %}"> Add Faculty Details </a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_faculty' %}"> View Faculty  Details </a></li>
+        </ul>
+    </div>
+</li>
+            <li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#student" aria-expanded="false" aria-controls="student">
+        <i class="fas fa-user-graduate menu-icon"></i>
+        <span class="menu-title">Student Details</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="student">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_student' %}"> Add Student Details </a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_student' %}"> View Student Details </a></li>
+        </ul>
+    </div>
+</li>
+
+            <li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#Announcements" aria-expanded="false" aria-controls="Announcements">
+        <i class="fas fa-bullhorn menu-icon"></i>
+        <span class="menu-title">Announcements </span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="Announcements">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link"  href="{% url 'add_announcements' %}"> Add Announcements Details </a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'View_Announcments' %}" > View Announcements  Details </a></li>
+        </ul>
+    </div>
+</li>
+
+            <li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#studentSignup" aria-expanded="false" aria-controls="studentSignup">
+        <i class="fas fa-user-plus menu-icon"></i>
+        <span class="menu-title">Student Signup</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="studentSignup">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_studentsignup' %}">Add Student Signup Details</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_studentsignup' %}">View Student Signup Details</a></li>
+        </ul>
+    </div>
+</li>
+            <li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#teacherSignup" aria-expanded="false" aria-controls="teacherSignup">
+        <i class="fas fa-chalkboard-teacher menu-icon"></i>
+        <span class="menu-title">Teacher Signup</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="teacherSignup">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_teacherignup' %}">Add Teacher Signup Details</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_teachersignup' %}">View Teachers Signup Details</a></li>
+        </ul>
+    </div>
+</li>
+<li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#studentLeave" aria-expanded="false" aria-controls="studentLeave">
+        <i class="fas fa-user-clock menu-icon"></i>
+        <span class="menu-title">Student Leave</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="studentLeave">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_student_leave' %}">Add Student Leave Details</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_studentleave' %}">View Student Leave Details</a></li>
+        </ul>
+    </div>
+</li>
+<li class="nav-item">
+    <a class="nav-link" data-toggle="collapse" href="#studentAttendance" aria-expanded="false" aria-controls="studentAttendance">
+        <i class="fas fa-check-circle menu-icon"></i>
+        <span class="menu-title">Student Attendance</span>
+        <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse" id="studentAttendance">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'add_studattendance' %}">Add Student Attendance</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'view_studenattendence' %}">View Student Attendance</a></li>
+        </ul>
+    </div>
+</li>
+
+
+
+
+
+
+
+
+
+        </ul>
+      </nav>
+      <!-- partial -->
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+              <div class="row">
+                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                    {% if user.is_authenticated %}
+            <p class=" font-weight-bold">Welcome, {{ user.username }}!</p>
+        {% endif %}
+                </div>
+
+
+
+
+                <div class="col-12 col-xl-4">
+                 <div class="justify-content-end d-flex">
+                  <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
+                    <button class="btn btn-sm btn-light bg-white " type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                     <i class="mdi mdi-calendar"></i>{{times}}
+                    </button>
+
+                  </div>
+                 </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% block content %}
+     <div class="row">
+    <!-- Number of Courses -->
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="col-md-12 stretch-card grid-margin grid-margin-md-8">
+            <div class="card data-icon-card-primary">
+                <div class="card-body">
+                    <p class="card-title text-white">Number of Courses</p>
+                    <div class="row">
+                        <div class="col-8 text-white">
+                            <h3>{{ c_course }}</h3>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-laptop-code" style="font-size: 2em; color: white;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Number of Faculty -->
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="col-md-12 stretch-card grid-margin grid-margin-md-5">
+            <div class="card data-icon-card-primary">
+                <div class="card-body">
+                    <p class="card-title text-white">Number of Faculty</p>
+                    <div class="row">
+                        <div class="col-8 text-white">
+                            <h3>{{ c_faculty }}</h3>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-chalkboard-teacher" style="font-size: 2em; color: white;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Number of Students -->
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="col-md-12 stretch-card grid-margin grid-margin-md-8">
+            <div class="card data-icon-card-primary">
+                <div class="card-body">
+                    <p class="card-title text-white">Number of Students</p>
+                    <div class="row">
+                        <div class="col-8 text-white">
+                            <h3>{{ c_student }}</h3>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-users" style="font-size: 2em; color: white;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+         <div class="col-md-4 stretch-card grid-margin">
+    <div class="col-md-12 stretch-card grid-margin grid-margin-md-5">
+        <div class="card data-icon-card-primary">
+            <div class="card-body">
+                <p class="card-title text-white">Number of Announcements</p>
+                <div class="row">
+                    <div class="col-8 text-white">
+                        <h3>{{ c_announcements }}</h3> <!-- Replace with your variable for announcements count -->
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-bullhorn" style="font-size: 2em; color: white;"></i> <!-- Announcement icon -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <!-- Student Leave Records -->
+
+
+    <!-- Student Attendance Records -->
+
+     </div></div>
+
+          </div>
+            {% endblock %}
+
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
+          </div>
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Distributed by <a href="https://www.themewagon.com/" target="_blank">Themewagon</a></span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+      <!-- main-panel ends -->
+    </div>
+
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="{% static 'admin/vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="{% static 'admin/vendors/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'admin/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+  <script src="{% static 'admin/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+  <script src="{% static 'admin/js/dataTables.select.min.js' %}"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'admin/js/off-canvas.js' %}"></script>
+  <script src="{% static 'admin/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'admin/js/template.js' %}"></script>
+  <script src="{% static 'admin/js/settings.js' %}"></script>
+  <script src="{% static 'admin/js/todolist.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="{% static 'admin/js/dashboard.js' %}"></script>
+  <script src="{% static 'admin/js/Chart.roundedBarCharts.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                {% if messages %}
+                    {% for message in messages %}
+                        Swal.fire({
+                            icon: "{{ message.tags }}",  // 'success' or 'error'
+                            title: "{{ message.tags|title }}!",  // Capitalize the message type
+                            text: "{{ message }}",  // The message text
+                            timer: 3000,  // Auto close after 3 seconds
+                            showConfirmButton: false  // No confirm button
+                        });
+                    {% endfor %}
+                {% endif %}
+            });
+        </script></body>
+
+</html>
+

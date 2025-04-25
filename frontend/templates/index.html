@@ -1,0 +1,478 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Tiny Dashboard - A Bootstrap Dashboard Template</title>
+    <!-- Simple bar CSS -->
+    <link rel="stylesheet" href="css/simplebar.css">
+    <!-- Fonts CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="{% static 'web/css/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/select2.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/dropzone.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/uppy.min.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/jquery.steps.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/jquery.timepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/quill.snow.css' %}">
+
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="{% static 'web/css/daterangepicker.css' %}">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="{% static 'web/css/app-light.css' %}" id="lightTheme" disabled>
+    <link rel="stylesheet" href="{% static 'web/css/app-dark.css' %}" id="darkTheme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  </head>
+  <style>
+    .equal-height {
+        display: flex;
+        align-items: stretch; /* Ensures cards stretch to equal height */
+    }
+    .card {
+        height: 100%; /* Makes the card take full height */
+    }
+</style>
+  <body class="vertical  dark  ">
+    <div class="wrapper">
+      <nav class="topnav navbar navbar-light">
+        <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
+          <i class="fe fe-menu navbar-toggler-icon"></i>
+        </button>
+        <form class="form-inline mr-auto searchform text-muted">
+          <input class="form-control mr-sm-2 bg-transparent border-0 pl-4 text-muted" type="search" placeholder="Type something..." aria-label="Search">
+        </form>
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="dark">
+              <i class="fe fe-sun fe-16"></i>
+            </a>
+          </li>
+
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="avatar avatar-sm mt-2">
+                <img src="{{teacher_details.f_pic}}" alt="..." class="avatar-img rounded-circle" width="30px" height="30px">
+              </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'profile_teacher' %}">My Profile</a>
+              <a class="dropdown-item" onclick="confirmLogout()">Log out</a>
+
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <aside class="sidebar-left border-right bg-white shadow" id="leftSidebar" data-simplebar>
+        <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
+          <i class="fe fe-x"><span class="sr-only"></span></i>
+        </a>
+        <nav class="vertnav navbar navbar-light">
+          <!-- nav bar -->
+          <div class="w-100 mb-4 d-flex">
+            <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
+              <svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+                <g>
+                  <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                  <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                  <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+                </g>
+              </svg>
+            </a>
+          </div>
+<!--          <ul class="navbar-nav flex-fill w-100 mb-2">-->
+<!--            <li class="nav-item dropdown">-->
+<!--              <a href="#dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">-->
+<!--                <i class="fe fe-home fe-16"></i>-->
+<!--                <span class="ml-3 item-text">Dashboard</span><span class="sr-only">(current)</span>-->
+<!--              </a>-->
+<!--              <ul class="collapse list-unstyled pl-4 w-100" id="dashboard">-->
+<!--                <li class="nav-item active">-->
+<!--                  <a class="nav-link pl-3" href="./index.html"><span class="ml-1 item-text">Default</span></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                  <a class="nav-link pl-3" href="./dashboard-analytics.html"><span class="ml-1 item-text">Analytics</span></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                  <a class="nav-link pl-3" href="./dashboard-sales.html"><span class="ml-1 item-text">E-commerce</span></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                  <a class="nav-link pl-3" href="./dashboard-saas.html"><span class="ml-1 item-text">Saas Dashboard</span></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                  <a class="nav-link pl-3" href="./dashboard-system.html"><span class="ml-1 item-text">Systems</span></a>-->
+<!--                </li>-->
+              </ul>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+             <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="fe fe-16 fe-home"></i>
+                <span class="ml-3 item-text">Dashboard</span>
+
+              </a>
+            </li>
+
+      <li class="nav-item w-100">
+
+            </li>
+             <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'student' %}">
+                <i class="fe fe-16 fe-user"></i>
+                <span class="ml-3 item-text">Add Students</span>
+
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'view_students' %}">
+                <i class="fe fe-users fe-16"></i>
+                <span class="ml-3 item-text">Student Profiles</span>
+
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'view_batches' %}">
+                <i class="fe fe-users fe-16"></i>
+                <span class="ml-3 item-text">View Batches</span>
+
+              </a>
+            </li>
+           <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'mark_attendance' %}">
+                <i class="fe fe-list fe-16"></i>
+                <span class="ml-3 item-text">Mark Attendance</span>
+
+              </a>
+            </li>
+<li class="nav-item w-100" id="attendance">
+    <a class="nav-link" href="">
+        <i class="fe fe-eye fe-16"></i>
+        <span class="ml-3 item-text">View Attendance</span>
+    </a>
+    <ul class="collapse list-unstyled pl-4 w-100" id="attendance-submenu">
+        <li class="nav-item">
+            <a class="nav-link pl-3" href="{% url 'dailywisedash' %}"><span class="ml-1 item-text">Daily Wise Attendance Report</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link pl-3" href="{% url 'view_attendence' %}"><span class="ml-1 item-text"> Attendance Summary</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link pl-3" href="{% url 'edit_view_attendence' %}"><span class="ml-1 item-text">Low Attendance Alert</span></a>
+        </li>
+    </ul>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'view_announcementsss' %}">
+                <i class="fe fe-bell fe-16"></i>
+                <span class="ml-3 item-text">Announcements</span>
+
+              </a>
+            </li>
+             </li>
+              <li class="nav-item w-100">
+              <a class="nav-link" href="{% url 'student_leave' %}">
+                <i class="fe fe-calendar fe-16"></i>
+                <span class="ml-3 item-text">View Student Leaves</span>
+
+              </a>
+            </li>
+
+          </ul>
+
+
+        </nav>
+      </aside>
+
+      <main role="main" class="main-content">
+           {% block content %}
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="row align-items-center mb-2">
+                <div class="col">
+                  <h2 class="h5 page-title">Welcome!{{teacher_details.f_name }}</h2>
+                </div>
+                <div class="col-auto">
+                  <form class="form-inline">
+                    <div class="form-group d-none d-lg-inline">
+                      <label for="reportrange" class="sr-only">{{ctime}}</label>
+                      <div id="reportrange" class="px-2 py-2 text-muted">
+                        <span class="small">{{ctime}}</span>
+                      </div>
+                    </div>
+<!--                    <div class="form-group">-->
+<!--                      <button type="button" class="btn btn-sm"><span class="fe fe-refresh-ccw fe-16 text-muted"></span></button>-->
+<!--                      <button type="button" class="btn btn-sm mr-2"><span class="fe fe-filter fe-16 text-muted"></span></button>-->
+<!--                    </div>-->
+                  </form>
+                </div>
+              </div>
+<div class="row equal-height">
+    <!-- Card 1: Number of Students -->
+    <div class="col-md-4 stretch-card grid-margin d-flex">
+        <div class="card text-white shadow flex-fill">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Total Batch Strength</h5>
+                        <h3>{{ batch_strength }}</h3> <!-- Replace with your variable for student count -->
+                    </div>
+                    <div>
+                        <i class="fas fa-user-graduate fa-3x"></i> <!-- Student icon -->
+                    </div>
+                </div>
+                <a href="{% url 'view_students' %}" class="btn btn-primary mt-3">View Details</a>
+            </div>
+        </div>
+    </div>
+    <!-- Card 1: Today's Attendance Status -->
+    <!-- Card: Attendance Status -->
+    <div class="col-md-4 stretch-card grid-margin d-flex">
+        <div class="card shadow-lg border-0 flex-fill">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if attendance_marked %}
+                            <h5 class="card-title text-uppercase mb-2">Today's Attendance</h5>
+                            <h3>{{ present_count }} / {{ batch_strength }} Present</h3>
+                            <p class="mb-0 text-muted">Updated for {{ today_date }}</p>
+                        {% else %}
+                            <h5 class="card-title text-uppercase mb-2">Attendance Not Marked</h5>
+                            <p class="mb-0 text-danger">Please mark today's attendance.</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <i class="fas fa-user-check fa-3x "></i> <!-- Attendance Icon -->
+                    </div>
+                </div>
+
+                {% if attendance_marked %}
+                    <a href="{% url 'batch_attendance' %}"
+                       class="btn btn-success mt-3 fw-bold">View Attendance</a>
+                {% else %}
+                    <a href="{% url 'mark_attendance' %}" class="btn btn-danger mt-3 fw-bold">Mark Attendance</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin d-flex">
+    <div class="card text-white  shadow-lg border-0 flex-fill">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title text-uppercase mb-2">Low Attendance Students</h5>
+                    <h3>{{ low_attendance_count }}</h3>  <!-- Dynamic student count -->
+                    <p class="mb-0 text-white-50"> Students Below 75% attendance</p>
+                </div>
+                <div>
+                    <i class="fas fa-exclamation-triangle  fa-3x"></i> <!-- Warning icon -->
+                </div>
+            </div>
+            {% if low_attendance_count > 0 %}
+                <a href="{% url 'low_Attendance'%}" class="btn btn-danger mt-3 fw-bold w-100">
+                    View Details
+                </a>
+            {% else %}
+
+                <button class="btn text-dark mt-3 fw-bold w-100 bg-success" >
+                    No Issues
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+    <!-- Card 2: Batch Strength with Condition -->
+</div>
+
+
+
+
+        {% endblock %}
+      </main> <!-- main -->
+    </div> <!-- .wrapper -->
+    <script src="{% static 'web/js/jquery.min.js' %}"></script>
+    <script src="{% static 'web/js/popper.min.js' %}"></script>
+    <script src="{% static 'web/js/moment.min.js' %}"></script>
+    <script src="{% static 'web/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'web/js/simplebar.min.js' %}"></script>
+    <script src="{% static 'web/js/daterangepicker.js' %}"></script>
+    <script src="{% static 'web/js/jquery.stickOnScroll.js' %}"></script>
+    <script src="{% static 'web/js/tinycolor-min.js' %}"></script>
+    <script src="{% static 'web/js/config.js' %}"></script>
+    <script src="{% static 'web/js/d3.min.js' %}"></script>
+    <script src="{% static 'web/js/topojson.min.js' %}"></script>
+    <script src="{% static 'web/js/datamaps.all.min.js' %}"></script>
+    <script src="{% static 'web/js/datamaps-zoomto.js' %}"></script>
+    <script src="{% static 'web/js/datamaps.custom.js' %}"></script>
+    <script src="{% static 'web/js/Chart.min.js' %}"></script>
+    <script>
+      /* defind global options */
+      Chart.defaults.global.defaultFontFamily = base.defaultFontFamily;
+      Chart.defaults.global.defaultFontColor = colors.mutedColor;
+    </script>
+    <script src="{% static 'web/js/gauge.min.js' %}"></script>
+    <script src="{% static 'web/js/jquery.sparkline.min.js' %}"></script>
+    <script src="{% static 'web/js/apexcharts.min.js' %}"></script>
+    <script src="{% static 'web/js/apexcharts.custom.js' %}"></script>
+    <script src="{% static 'web/js/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'web/js/select2.min.js' %}"></script>
+    <script src="{% static 'web/js/jquery.steps.min.js' %}"></script>
+    <script src="{% static 'web/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'web/js/jquery.timepicker.js' %}"></script>
+    <script src="{% static 'web/js/dropzone.min.js' %}"></script>
+    <script src="{% static 'web/js/uppy.min.js' %}"></script>
+    <script src="{% static 'web/js/quill.min.js' %}"></script>
+
+    <script>
+      var uptarg = document.getElementById('drag-drop-area');
+      if (uptarg)
+      {
+        var uppy = Uppy.Core().use(Uppy.Dashboard,
+        {
+          inline: true,
+          target: uptarg,
+          proudlyDisplayPoweredByUppy: false,
+          theme: 'dark',
+          width: 770,
+          height: 210,
+          plugins: ['Webcam']
+        }).use(Uppy.Tus,
+        {
+          endpoint: 'https://master.tus.io/files/'
+        });
+        uppy.on('complete', (result) =>
+        {
+          console.log('Upload complete! We’ve uploaded these files:', result.successful)
+        });
+      }
+    </script>
+    <script src="{% static 'web/js/apps.js' %}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56159088-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag()
+      {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'UA-56159088-1');
+    </script>
+  <script>
+    function searchFunction() {
+
+        const query = document.getElementById('search1').value.toLowerCase();
+
+        const rows = document.querySelectorAll('tbody tr');
+
+
+        rows.forEach(row => {
+
+            const cells = row.querySelectorAll('td');
+
+            let found = false;
+
+
+            cells.forEach(cell => {
+
+                if (cell.textContent.toLowerCase().includes(query)) {
+
+                    found = true;
+
+                }
+
+            });
+
+
+            if (found) {
+
+                row.style.display = ''; // Show the row
+
+            } else {
+
+                row.style.display = 'none'; // Hide the row
+
+            }
+
+        });
+
+    }
+  </script>
+
+    <script>
+    function confirmLogout() {
+        // Show a SweetAlert confirmation dialog
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure you want to logout of the AMS?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willLogout) => {
+            if (willLogout) {
+                // If the user confirms, redirect to the logout URL
+                window.location.href = "{% url 'logout_view' %}";
+            }
+        });
+    }
+</script>
+    <script>
+    $(document).ready(function() {
+        // Toggle the submenu when the main menu item is clicked
+        $('#attendance > a').click(function(e) {
+            e.preventDefault(); // Prevent the default anchor click behavior
+            $('#attendance-submenu').collapse('toggle'); // Toggle the submenu
+        });
+    });
+
+</script>
+
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                swal({
+                    title: "{{ message }}",
+                    icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    button: "Okay",
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+  </body>
+</html>
+

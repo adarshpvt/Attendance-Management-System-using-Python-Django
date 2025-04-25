@@ -1,0 +1,149 @@
+{% extends 'admin.html' %}
+{% block content %}
+{% load static %}
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .card-container {
+      max-width: 95%;
+      margin: auto;
+    }
+
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      background-color: white;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .dataTables_filter input {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px;
+    }
+
+    .dataTables_paginate .paginate_button {
+      color: #5454c4 !important;
+    }
+
+    .custom-btn {
+      background-color: #5454c4;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(61, 61, 176, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .custom-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+  </style>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="card-container">
+  <div class="card">
+    <h3 class="text-center mb-4">Course List</h3>
+    <div class="table-container">
+      <table id="departmentTable" class="table table-striped table-bordered display expandable-table">
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Batch Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in course %}
+            <tr>
+              <td>{{ i.name }}</td>
+              <td>{{ i.bname }}</td>
+              <td>
+                <!-- Edit Button with SweetAlert -->
+                <a href="#" class="custom-btn" title="Edit"
+                   onclick="confirmEdit('{% url 'edit_course' pk=i.id %}')">
+                  <i class="fas fa-edit"></i>
+                </a>&nbsp;
+
+                <!-- Delete Button with SweetAlert -->
+                <a href="#" class="custom-btn" title="Delete"
+                   onclick="confirmDelete('{% url 'delete_course' c_id=i.id %}')">
+                  <i class="fas fa-trash-alt"></i>
+                </a>&nbsp;
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'admin/vendors/js/vendor.bundle.base.js' %}"></script>
+<script src="{% static 'admin/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'admin/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+
+<!-- Custom JS -->
+<script>
+  $(document).ready(function () {
+    $('#departmentTable').DataTable({
+      responsive: true,
+      paging: true,
+      searching: true,
+      ordering: true,
+      language: {
+        search: "Search Course:"
+      },
+    });
+  });
+
+  // SweetAlert for Edit Confirmation
+  function confirmEdit(editUrl) {
+      Swal.fire({
+          title: "Are you sure?",
+          text: "Do you want to edit this Course Details?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, edit it!"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = editUrl; // Redirect to the edit page
+          }
+      });
+  }
+
+  // SweetAlert for Delete Confirmation
+  function confirmDelete(deleteUrl) {
+      Swal.fire({
+          title: "Are you sure?",
+          text: "Once deleted, you will not be able to recover this course!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = deleteUrl; // Redirect to the delete page
+          }
+      });
+  }
+</script>
+
+{% endblock %}

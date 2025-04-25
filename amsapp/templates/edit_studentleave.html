@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Leave Form</title>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .card-title {
+            font-weight: bold;
+            color: #5454C4;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-8 mb-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Student Leave Form</h4>
+                    <form id="leaveForm" method="POST" action="{% url 'update_studentleave' sl_id=sleave.id %}">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="student-name">Student Name</label>
+                            <input type="text" class="form-control" id="student-name" name="lsname" placeholder="Enter Student Name" required value="{{sleave.l_sname}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-name">Course Name</label>
+                            <select class="form-control" id="course-name" name="lcname" required>
+                                <option value="{{sleave.l_cname}}" selected>{{sleave.l_cname}}</option>
+                                {% for i in cou %}
+                                <option value="{{i.name}}">{{i.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="faculty-name">Faculty Name</label>
+                            <select class="form-control" id="faculty-name" name="lfname" required>
+                                <option value="{{sleave.l_fname}}" selected>{{sleave.l_fname}}</option>
+                                {% for i in fac %}
+                                <option value="{{i.f_name}}">{{i.f_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="leave-date">Leave Date</label>
+                            <input type="date" class="form-control" id="leave-date" name="date" required value="{{sleave.l_ndate}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reason-for-leave">Reason for Leave</label>
+                            <textarea class="form-control" id="reason-for-leave" name="lreason" placeholder="Enter Reason for Leave" required>{{sleave.l_reason}}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="leave-status">Leave Status</label>
+                            <select class="form-control" id="leave-status" name="status" required>
+                                <option value="{{sleave.status}}" selected>{{sleave.status}}</option>
+                                <option value="approved">Approved</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary d-block mx-auto"
+                                style="background-color:#5454C4; width: 150px; border-radius:5px;">
+                            Update
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("leaveForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get form inputs
+            const studentName = document.getElementById("student-name").value.trim();
+            const courseName = document.getElementById("course-name").value.trim();
+            const facultyName = document.getElementById("faculty-name").value.trim();
+            const leaveDate = document.getElementById("leave-date").value.trim();
+            const reasonForLeave = document.getElementById("reason-for-leave").value.trim();
+            const leaveStatus = document.getElementById("leave-status").value.trim();
+
+            // Check if any field is empty
+            if (!studentName || !courseName || !facultyName || !leaveDate || !reasonForLeave || !leaveStatus) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all fields before submitting!",
+                });
+                return;
+            }
+
+            // Check if a valid option is selected from dropdowns
+            if (courseName === "Select your course" || facultyName === "Select your faculty" || leaveStatus === "Select status") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid Selection",
+                    text: "Please select a valid option from the dropdown fields.",
+                });
+                return;
+            }
+
+            // Confirmation alert before submitting
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to update the student leave details?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Update"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Updating...",
+                        text: "Please wait while we update the details.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById("leaveForm").submit(); // Submit the form after confirmation
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+{% endblock %}

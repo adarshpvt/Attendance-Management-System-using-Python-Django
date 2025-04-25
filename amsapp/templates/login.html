@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 for Alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-login {
+            background-color: #5454C4;
+            border: none;
+            color: white;
+        }
+        .btn-login:hover {
+            background-color: #4747B3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h3 class="text-center">Admin Login</h3>
+
+        <!-- SweetAlert for Login Messages -->
+         <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                {% if messages %}
+                    {% for message in messages %}
+                        Swal.fire({
+                            icon: "{{ message.tags }}",  // 'success' or 'error'
+                            title: "{{ message.tags|title }}!",  // Capitalize the message type
+                            text: "{{ message }}",  // The message text
+                            timer: 3000,  // Auto close after 3 seconds
+                            showConfirmButton: false  // No confirm button
+                        });
+                    {% endfor %}
+                {% endif %}
+            });
+        </script>
+
+        <!-- Django Default Login Form -->
+        <form method="POST" action="{% url 'admin_login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter username" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn btn-login w-100">Login</button>
+        </form>
+    </div>
+
+</body>
+</html>

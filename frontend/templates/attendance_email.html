@@ -1,0 +1,137 @@
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Attendance Students</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <style>
+        .radial-chart-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: auto;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80px !important;
+            height: 80px !important;
+        }
+        .percentage-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="text-lg font-semibold">Low Attendance Students (Below 75%)</h2>
+    <p><strong>Course Name:</strong> {{ course_name }}</p>
+    <p><strong>Batch Name:</strong> {{ batch_name }}</p>
+    <p><strong>Faculty Name:</strong> {{ teacher_details.f_name }}</p>
+
+    {% if attendance_stats %}
+        <script>
+            Swal.fire({
+                title: "Warning!",
+                text: "Some students have attendance below 75%. Please take necessary action!",
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+        </script>
+ <div class="table-responsive">
+     <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Parent Email</th>
+                    <th>Total Classes</th>
+                    <th>Total Present</th>
+                    <th>Total Absent</th>
+                    <th>Attendance Percentage</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student_id, stats in attendance_stats.items %}
+                    <tr>
+                        <td>{{ stats.student_name }}</td>
+                        <td>{{ stats.parent_email }}</td>
+                        <td>{{ stats.total_classes }}</td>
+                        <td>{{ stats.total_present }}</td>
+                        <td>{{ stats.total_absent }}</td>
+                        <td>
+                            <div class="radial-chart-container">
+                                <canvas id="radialChart_{{ student_id }}" width="50" height="50"></canvas>
+                                <div class="percentage-label">{{ stats.attendance_percentage|floatformat:2 }}%</div>
+                            </div>
+                            <script>
+                                var ctx = document.getElementById('radialChart_{{ student_id }}').getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'doughnut',
+                                    data: {
+                                        datasets: [{
+                                            data: [{{ stats.attendance_percentage|floatformat:2 }}, {{ stats.absent_percentage|floatformat:2 }}],
+                                            backgroundColor: ['#007bff', '#dc3545'],
+                                            borderWidth: 0
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        cutoutPercentage: 70,
+                                        legend: { display: false },
+                                        tooltips: { enabled: false }
+                                    }
+                                });
+                            </script>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'send_attendance_email' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="student_name" value="{{ stats.student_name }}">
+                                <input type="hidden" name="parent_email" value="{{ stats.parent_email }}">
+                                <input type="hidden" name="attendance_percentage" value="{{ stats.attendance_percentage }}">
+                                <input type="hidden" name="faculty_name" value="{{stats.faculty_name}}">
+                                <button type="submit" class="btn btn-primary">Send Email</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+    {% else %}
+        <script>
+            Swal.fire({
+                title: "Great News!",
+                text: "All students have attendance above 75%. Keep up the good work!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        </script>
+
+        <div class="alert alert-success text-center" role="alert">
+             No students have attendance below 75%! Everyone is doing great!
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
+{% endblock content %}

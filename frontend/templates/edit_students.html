@@ -1,0 +1,147 @@
+<!doctype html>
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Student Details</title>
+</head>
+<body>
+<div class="col-md-12">
+  <div class="card shadow mb-4">
+    <div class="card-header">
+      <strong class="card-title">Add Student Details</strong>
+    </div>
+    <div class="card-body">
+      <form class="needs-validation" novalidate="" method="post" action="{% url 'save_Tstudent' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+          <!-- Student Name Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentName">Student Name</label>
+            <input type="text" class="form-control" name="sname" id="studentName" placeholder="Enter Student Name" required="">
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter the student name.</div>
+          </div>
+
+          <!-- Student ID Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentID">Student ID / Register Number</label>
+            <input type="text" class="form-control" id="studentID" placeholder="Enter Student ID" required="" name="sid">
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter a valid Student ID.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Course Name Field (Dropdown) -->
+          <div class="col-md-6 mb-3">
+            <label for="courseName">Course Name</label>
+            <select class="form-control" id="courseName" required="" name="cname">
+              <option disabled selected>Select the Course</option>
+                {% for i in course %}
+              <option >{{i.name}}</option>
+                {% endfor %}
+
+            </select>
+            <div class="invalid-feedback">Please select a valid course.</div>
+          </div>
+
+          <!-- Batch Name Field (Dropdown) -->
+          <div class="col-md-6 mb-3">
+            <label for="batchName">Batch Name</label>
+            <select class="form-control" id="batchName" required="" name="bname">
+              <option disabled selected>Select the Batch</option>
+                {% for i in course %}
+              <option >{{i.bname}}</option>
+                {% endfor %}
+
+            </select>
+            <div class="invalid-feedback">Please select a valid batch.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Gender Field (Dropdown) -->
+          <div class="col-md-6 mb-3">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" required="" name="sgender">
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="invalid-feedback">Please select a valid gender.</div>
+          </div>
+
+          <!-- Date of Birth Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentDOB">Date of Birth</label>
+            <input type="date" class="form-control" id="studentDOB" required="" name="sdob">
+            <div class="invalid-feedback">Please enter a valid date of birth.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Phone Number Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentPhone">Mobile Number</label>
+            <input type="text" class="form-control" id="studentPhone" placeholder="Enter Mobile Number" required="" name="sphn">
+            <div class="invalid-feedback">Please enter a valid phone number.</div>
+          </div>
+
+          <!-- Email Address Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentEmail">Email Address</label>
+            <input type="email" class="form-control" id="studentEmail" placeholder="Enter Email" required="" name="semail">
+
+
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Address Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentAddress">Address</label>
+            <textarea class="form-control" id="studentAddress" placeholder="Enter address" required="" rows="3" name="sdes"></textarea>
+            <div class="invalid-feedback">Please enter a valid address.</div>
+          </div>
+
+          <!-- Parent's Email Field -->
+          <div class="col-md-6 mb-3">
+            <label for="parentEmail">Parent's Email</label>
+            <input type="email" class="form-control" id="parentEmail" placeholder="Enter Parent's Email" required="" name="p_email">
+            <div class="invalid-feedback">Please enter a valid parent's email address.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Profile Picture Upload Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentImage">Upload Student Image</label>
+            <input type="file" class="form-control-file" id="studentImage" accept="image/*" required="" name="simage">
+            <div class="invalid-feedback">Please upload a student image.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <!-- Agree to Terms and Conditions -->
+        <div class="custom-control custom-checkbox mb-3">
+          <input type="checkbox" class="custom-control-input" id="termsCheck" required="">
+          <label class="custom-control-label" for="termsCheck">Agree to terms and conditions</label>
+          <div class="invalid-feedback">You must agree before submitting.</div>
+        </div>
+
+        <!-- Submit Button -->
+        <button class="btn btn-primary" type="submit">Submit Form</button>
+      </form>
+    </div> <!-- /.card-body -->
+  </div> <!-- /.card -->
+</div>
+
+</body>
+</html>
+{% endblock content %}

@@ -1,0 +1,158 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 for Alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-login {
+            background-color: #5454C4;
+            border: none;
+            color: white;
+        }
+        .btn-login:hover {
+            background-color: #4747B3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h3 class="text-center">Admin Login</h3>
+
+        <form method="POST" action="{% url 'admin_login' %}" id="loginForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter username" >
+            </div>
+
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter password" >
+            </div>
+
+            <button type="submit" class="btn btn-login w-100">Login</button>
+        </form>
+    </div>
+
+<script>
+$(document).ready(function() {
+    var usernameValid = false; // Track if username is valid
+
+    // Check if username exists when user types it
+    $("#id_username").blur(function() {
+        var username = $(this).val();
+        if (username.length > 0) {
+            $.ajax({
+                url: "{% url 'check_username' %}",
+                type: "POST",
+                data: {
+                    'username': username,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (!response.exists) {
+                        usernameValid = false;
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid Username",
+                            text: "This username does not exist!",
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        usernameValid = true;
+                    }
+                }
+            });
+        }
+    });
+
+    // Validate login before submission
+    $("#loginForm").submit(function(e) {
+        e.preventDefault(); // Prevent form submission
+
+        var username = $("#id_username").val();
+        var password = $("#id_password").val();
+
+        if (username.length === 0 || password.length === 0) {
+            Swal.fire({
+                icon: "warning",
+                title: "Empty Fields",
+                text: "Username and Password cannot be empty!",
+                timer: 3000,
+                showConfirmButton: false
+            });
+            return;
+        }
+
+        if (!usernameValid) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Username",
+                text: "Please enter a valid username!",
+                timer: 3000,
+                showConfirmButton: false
+            });
+            return;
+        }
+
+        // Check if username and password match
+        $.ajax({
+            url: "{% url 'validate_login' %}",
+            type: "POST",
+            data: {
+                'username': username,
+                'password': password,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.valid) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Login Successful",
+                        text: "Redirecting to dashboard...",
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $("#loginForm")[0].submit();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Invalid Credentials",
+                        text: "Username or Password is incorrect!",
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                }
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

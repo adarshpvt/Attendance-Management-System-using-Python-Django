@@ -1,0 +1,151 @@
+<!doctype html>
+{% extends 'student_dashboard.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Student Details</title>
+    <!-- Include SweetAlert CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+</head>
+<body>
+<div class="col-md-8 mb-12">
+    <div class="card shadow mb-4">
+        <div class="card-header">
+            <strong class="card-title">ADD STUDENT LEAVE</strong>
+        </div>
+        <div class="card-body">
+            <form id="studentLeaveForm" class="needs-validation" novalidate="" method="post" action="{% url 'save_student_leaves' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Student Name Field -->
+                <div class="col-md-8 mb-3">
+                    <label for="studentName">Student Name</label>
+                    <input type="text" class="form-control" name="lsname" id="studentName" placeholder="Enter Student Name" required value="{{student_details.s_name}}">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter the student name.</div>
+                </div>
+
+                <!-- Course Name Field -->
+                <div class="col-md-8 mb-3">
+                    <label for="CourseName">Course Name</label>
+                    <input type="text" class="form-control" name="lcname" id="CourseName" placeholder="Enter Course Name" required value="{{student_details.c_name}}">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter the Course name.</div>
+                </div>
+
+                <!-- Faculty Name Field -->
+                <div class="col-md-8 mb-3">
+                    <label for="facultyName">Faculty Name</label>
+                    <input type="text" class="form-control" name="lfname" id="facultyName" placeholder="Enter Faculty Name" required value="{{student_details.s_fac}}">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter the faculty name.</div>
+                </div>
+
+                <!-- Leave Date Field -->
+                <div class="col-md-8 mb-3">
+                    <label for="leaveDate">Leave Date</label>
+                    <input type="date" class="form-control" name="date" id="leaveDate" required>
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please select a leave date.</div>
+                </div>
+
+                <!-- Reason Field -->
+                <div class="col-md-8 mb-3">
+                    <label for="reason">Reason for Leave</label>
+                    <textarea class="form-control" name="lreason" id="reason" rows="2" placeholder="Enter the reason for leave" required></textarea>
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please provide a reason for leave.</div>
+                </div>
+
+                <!-- Submit Button -->
+                <div style="text-align:justify;">
+                    <button class="btn btn-primary" type="submit">Submit Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('studentLeaveForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get all form fields
+    const studentName = document.getElementById('studentName').value.trim();
+    const courseName = document.getElementById('CourseName').value.trim();
+    const facultyName = document.getElementById('facultyName').value.trim();
+    const leaveDate = document.getElementById('leaveDate').value.trim();
+    const reason = document.getElementById('reason').value.trim();
+
+    // Check if any field is empty
+    if (!studentName || !courseName || !facultyName || !leaveDate || !reason) {
+        swal({
+            title: "Error!",
+            text: "Please fill in all required fields",
+            icon: "error",
+            button: "OK",
+        });
+        return false;
+    }
+
+    // Additional validation rules
+    if (studentName.length < 2) {
+        swal({
+            title: "Error!",
+            text: "Student name must be at least 2 characters long",
+            icon: "error",
+            button: "OK",
+        });
+        return false;
+    }
+
+    // Validate date is not in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(leaveDate);
+    if (selectedDate < today) {
+        swal({
+            title: "Error!",
+            text: "Leave date cannot be in the past",
+            icon: "error",
+            button: "OK",
+        });
+        return false;
+    }
+
+    // If all validations pass, submit the form
+    if (this.checkValidity()) {
+        swal({
+            title: "Success!",
+            text: "Form submitted successfully!",
+            icon: "success",
+            button: "OK",
+        }).then((value) => {
+            if (value) {
+                this.submit();
+            }
+        });
+    }
+});
+
+// Add real-time validation for input fields
+const inputs = document.querySelectorAll('input, textarea');
+inputs.forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
+</script>
+
+</body>
+</html>
+{% endblock content %}

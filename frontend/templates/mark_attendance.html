@@ -1,0 +1,62 @@
+<!doctype html>
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mark Attendance</title>
+    <style>
+        .card {
+            height: 300px; /* Set a fixed height for the card */
+        }
+
+        .avatara-img {
+            width: 80px; /* Set a fixed width for the image */
+            height: 80px; /* Set a fixed height for the image */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            justify-content: space-between; /* Space out items */
+            height: 100%; /* Make the body take full height of the card */
+            text-align: center; /* Center text */
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row align-items-center my-4">
+        <div class="col">
+            <h2 class="h4 mb-1">Mark Attendance</h2>
+        </div>
+    </div>
+    <div class="row">
+        {% for i in batch %}
+        <div class="col-md-3 mb-4"> <!-- Adjusted to col-md-3 for narrower cards -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="avatar avatar-lg mt-2">
+                        <img src="{{ i.f_pic.url }}" alt="Faculty Picture" class="avatara-img rounded-circle"> <!-- Faculty image -->
+                    </div>
+                    <h5 class="card-title mt-2">{{ i.course_name }}</h5>
+                    <p class="small text-muted mb-0">{{ i.batch_name }}</p>
+                    <p class="small text-muted mb-0">{{ i.f_name }}</p>
+                </div> <!-- ./card-body -->
+                <div class="card-footer text-center"> <!-- Centered the footer content -->
+                    <a href="{% url 'mark_attendance_byclass' cou_name=i.course_name %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-eye"></i> View Class
+                    </a>
+                </div> <!-- /.card-footer -->
+            </div>
+        </div> <!-- .col -->
+        {% endfor %}
+    </div> <!-- .row -->
+</div> <!-- .container-fluid -->
+</body>
+</html>
+{% endblock %}

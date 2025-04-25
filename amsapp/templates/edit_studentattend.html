@@ -1,0 +1,87 @@
+{% extends 'admin.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Edit Student Attendance</h4>
+
+                    <form method="POST" action="">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="student-name">Student Name</label>
+                            <input type="text" class="form-control" id="student-name"
+                                   name="student-name" value="{{ satt.student_name }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-id">Student ID</label>
+                            <input type="text" class="form-control" id="student-id"
+                                   name="student-id" value="{{ satt.student_id }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="faculty-name">Faculty Name</label>
+                            <select class="form-control" id="faculty-name" name="faculty-name" required>
+                                <option value="{ faculty.f_name }}">{ faculty.f_name }}</option>
+                                {% for faculty in fac %}
+                                    <option value="{{ faculty.f_name }}" {% if satt.faculty_name == faculty.f_name %}selected{% endif %}>
+                                        {{ faculty.f_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-name">Course Name</label>
+                            <select class="form-control" id="course-name" name="course-name" required>
+                                <option value="">Select Course</option>
+                                {% for course in cou %}
+                                    <option value="{{ course.name }}" {% if satt.course_name == course.name %}selected{% endif %}>
+                                        {{ course.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="batch-name">Batch Name</label>
+                            <select class="form-control" id="batch-name" name="batch-name" required>
+                                <option value="">Select Batch</option>
+                                {% for batch in cou %}
+                                    <option value="{{ batch.bname }}" {% if satt.batch_name == batch.bname %}selected{% endif %}>
+                                        {{ batch.bname }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attendance-date">Attendance Date</label>
+                            <input type="date" class="form-control" id="attendance-date"
+                                   name="attendance-date" value="{{ satt.attendance_date|date:'Y-m-d' }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attendance-status">Attendance Status</label>
+                            <select class="form-control" id="attendance-status" name="attendance-status" required>
+                                <option value="present" {% if satt.status == "present" %}selected{% endif %}>Present</option>
+                                <option value="absent" {% if satt.status == "absent" %}selected{% endif %}>Absent</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary d-block mx-auto"
+                                style="background-color:#5454C4; width: 180px; border-radius:5px;">
+                            Update Attendance
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

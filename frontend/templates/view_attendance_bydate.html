@@ -1,0 +1,112 @@
+{% extends 'index.html' %}
+{% block content %}
+<head>
+    <!-- Include SweetAlert CSS and JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+</head>
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-lg font-semibold">Attendance Details of Class {{ course_name }}</h2>
+            </div>
+
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Course Name:</strong> {{ course_name }}</p>
+                        <p><strong>Batch Name:</strong> {{ batch_name }}</p>
+                        <p><strong>Faculty Name:</strong> {{ faculty_name }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <form method="GET" action="{% url 'view_attendance_bydemo' cou_name=course_name %}" class="form-inline mb-4">
+                <div class="form-group mr-2">
+                    <label for="attendance_date" class="mr-2">Select Date:</label>
+                    <input type="date" id="attendance_date" name="attendance_date" value="{{ date_filter }}" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+
+            {% if date_filter %}
+                {% if attendance_stats|length == 0 %}
+                    <script>
+                        // Trigger SweetAlert when there are no attendance records
+                        swal({
+                            title: "Attendance Record Not Found!",
+                            text: "No attendance marked for the selected date.",
+                            icon: "warning",
+                            button: "OK",
+                        });
+                    </script>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Student ID</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student_id, stats in attendance_stats.items %}
+                                    <tr>
+                                        <td>{{ stats.student_name }}</td>
+                                        <td>{{ student_id }}</td>
+                                        <td>
+                                            {% if stats.status|lower == "present" %}
+                                                <span class="badge badge-success">Present</span>
+                                            {% elif stats.status|lower == "absent" %}
+                                                <span class="badge badge-danger">Absent</span>
+                                            {% else %}
+                                                {{ stats.status }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'view_attendance_bydemopdf' cou_name=course_name %}?download_pdf=1{% if date_filter %}&attendance_date={{ date_filter }}{% endif %}"
+                               class="btn btn-primary"
+                               id="downloadPdfBtn">
+                                <i class="fas fa-download"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <p>Please select a date to view attendance records.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Add event listener to the Download PDF button
+document.getElementById('downloadPdfBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent the default link behavior
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Download PDF",
+        text: "Are you sure you want to download the attendance PDF?",
+        icon: "info",
+        buttons: {
+            cancel: "Cancel",
+            confirm: "Yes, Download",
+        },
+    }).then((willDownload) => {
+        if (willDownload) {
+            // Redirect to the PDF download URL
+            window.location.href = this.href;
+        }
+    });
+});
+</script>
+{% endblock content %}

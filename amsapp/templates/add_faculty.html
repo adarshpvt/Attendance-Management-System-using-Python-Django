@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+
+<head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Add Faculty</title>
+
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Custom CSS -->
+  <style>
+    .card-title {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="row">
+    <div class="col-md-8 mb-12">
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <h4 class="card-title text-center font-weight-bold">Add Faculty Details</h4>
+
+          <form id="facultyForm" method="POST" action="{% url 'save_faculty' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label for="fname">Faculty Name</label>
+              <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter Faculty Name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="fid">Faculty ID</label>
+              <input type="text" class="form-control" id="fid" name="id" placeholder="Enter Faculty ID" required>
+            </div>
+
+            <div class="form-group">
+              <label>Course Name</label>
+              <select class="form-control" name="cname" id="cname" required>
+                <option disabled selected>Select a Course</option>
+                {% for d in cou %}
+                  <option>{{ d.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Batch Name</label>
+              <select class="form-control" name="bname" id="bname" required>
+                <option disabled selected>Select a Batch</option>
+                {% for d in cou %}
+                  <option>{{ d.bname }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <select class="form-control" name="f_gen" required>
+                <option disabled selected>Select your gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Others</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input type="date" class="form-control" id="dob" name="f_dob" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phn">Phone Number</label>
+              <input type="tel" class="form-control" id="phn" name="fphn" placeholder="Enter Phone Number" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" class="form-control" id="email" name="femail" placeholder="Enter Email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="deptDescription">Address</label>
+              <textarea class="form-control" id="deptDescription" name="fdes" rows="3" placeholder="Enter Address" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="imageUpload" class="form-label">Upload Faculty Profile Picture</label>
+              <input class="form-control" type="file" id="imageUpload" name="fimage" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary d-block mx-auto" style="background-color:#5454C4; width: 150px; border-radius:5px;">
+              Submit
+            </button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    document.getElementById("facultyForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Stop default submission
+
+      let form = this;
+      let inputs = form.querySelectorAll("input, select, textarea");
+      let isValid = true;
+      let emptyField = null;
+
+      // Check if all required fields are filled
+      inputs.forEach(input => {
+        if (input.hasAttribute("required") && !input.value.trim()) {
+          isValid = false;
+          emptyField = input;
+        }
+      });
+
+      if (!isValid) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "All fields are required. Please fill them before submitting.",
+          confirmButtonColor: "#d33"
+        }).then(() => {
+          if (emptyField) {
+            emptyField.focus();
+          }
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: "Confirm Submission?",
+        text: "Are you sure you want to add this faculty member?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Processing...",
+            text: "Please wait while the faculty details are being saved.",
+            icon: "info",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timer: 2000 // Simulate a processing delay
+          });
+
+          setTimeout(() => {
+            form.submit(); // Submit only if confirmed
+          }, 2000);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
+{% endblock %}

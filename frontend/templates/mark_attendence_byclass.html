@@ -1,0 +1,159 @@
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mark Attendance</title>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+</head>
+<body>
+<style>
+    /* Style for the present checkbox (blue) */
+    .custom-control-input:checked.present ~ .custom-control-label::before {
+        background-color: blue;
+        border-color: blue;
+    }
+
+    .custom-control-input:checked.absent ~ .custom-control-label::before {
+        background-color: red;
+        border-color: red;
+    }
+</style>
+
+<div class="container mt-5">
+    <form method="POST" action="{% url 'save_attendance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="course_name" value="{{ course_name }}">
+        <input type="hidden" name="batch_name" value="{{ batch_name }}">
+        <input type="hidden" name="faculty_name" value="{{ faculty_name }}">
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h2 class="text-lg font-semibold">Mark Attendance for the Class {{course_name}}</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Course Name: {{ course_name }}</p>
+                                    <p>Batch Name: {{ batch_name }}</p>
+                                    <p>Faculty Name: {{ faculty_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="mb-2">
+            <label for="attendance_date">Select Date:</label>
+            <input type="date" id="" name="attendance_date" class="form-control datepicker" required>
+        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2"> Student List</h2>
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Student ID</th>
+                                        <th>Present</th>
+                                        <th>Absent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in data %}
+                                        <tr>
+                                            <td>{{ i.s_name }}</td>
+                                            <td>{{ i.s_id }}</td>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input present" id="present_{{ i.s_id }}" name="attendance_status_{{ i.s_id }}" value="Present">
+                                                    <label class="custom-control-label" for="present_{{ i.s_id }}">Present</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input absent" id="absent_{{ i.s_id }}" name="attendance_status_{{ i.s_id }}" value="Absent">
+                                                    <label class="custom-control-label" for="absent_{{ i.s_id }}">Absent</label>
+                                                </div>
+                                            </td>
+                                            <input type="hidden" name="student_name_{{ i.s_id }}" value="{{ i.s_name }}">
+
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-primary">Mark Attendance</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function() {
+        // Handle checkbox selection
+        $('.present').change(function() {
+            var studentId = $(this).attr('id').split('_')[1]; // Get the student ID
+            if ($(this).is(':checked')) {
+                $('#absent_' + studentId).prop('checked', false); // Uncheck the absent checkbox
+            }
+        });
+
+        $('.absent').change(function() {
+            var studentId = $(this).attr('id').split('_')[1]; // Get the student ID
+            if ($(this).is(':checked')) {
+                $('#present_' + studentId).prop('checked', false); // Uncheck the present checkbox
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        // Handle checkbox selection
+        $('.present').change(function() {
+            var studentId = $(this).attr('id').split('_')[1];
+            if ($(this).is(':checked')) {
+                $('#absent_' + studentId).prop('checked', false);
+            }
+        });
+
+        $('.absent').change(function() {
+            var studentId = $(this).attr('id').split('_')[1];
+            if ($(this).is(':checked')) {
+                $('#present_' + studentId).prop('checked', false);
+            }
+        });
+
+        // Form submission with SweetAlert confirmation
+        $('form').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = this;
+
+            // Show SweetAlert on form submission
+            swal({
+                title: "Success!",
+                text: "Attendance has been marked successfully.",
+                icon: "success",
+                button: "OK",
+            }).then((confirmed) => {
+                if (confirmed) {
+                    form.submit(); // Submit the form after confirmation
+                }
+            });
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
+{% endblock content %}

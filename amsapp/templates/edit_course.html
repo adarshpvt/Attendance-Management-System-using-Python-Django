@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Edit Course</title>
+
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+
+  <div class="row">
+    <div class="col-md-8 mb-12 grid-margin stretch-card">
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <h4 class="card-title text-center font-weight-bold">Edit Course Details</h4>
+
+          <form id="editCourseForm" method="POST" action="{% url 'update_course' co_id=course.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label>Course Name</label>
+              <input type="text" class="form-control" name="cname" placeholder="Enter Course name" required value="{{ course.name }}">
+            </div>
+
+            <div class="form-group">
+              <label>Batch Name</label>
+              <input type="text" class="form-control" name="bname" placeholder="Enter Batch name" required value="{{ course.bname }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary d-block mx-auto" style="background-color:#5454C4; width: 150px; border-radius:5px;">
+              Update
+            </button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    document.getElementById("editCourseForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Stop default submission
+
+      if (!this.reportValidity()) {
+        return; // Stop if validation fails
+      }
+
+      Swal.fire({
+        title: "Confirm Edit?",
+        text: "Are you sure you want to update the course details?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submit(); // Submit only if confirmed
+        }
+      });
+    });
+
+    // Show success alert after submission
+    {% if messages %}
+      {% for message in messages %}
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "{{ message }}",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      {% endfor %}
+    {% endif %}
+  </script>
+
+</body>
+</html>
+{% endblock %}

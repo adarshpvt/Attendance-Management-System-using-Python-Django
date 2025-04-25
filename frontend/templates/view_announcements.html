@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+{% extends 'index.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student Details</title>
+
+    <!-- Include Bootstrap & SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-12 my-4">
+            <h2 class="h4 mb-1">Announcements</h2>
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div></div>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNotificationModal">
+                            <i class="fas fa-plus"></i> Add Notification
+                        </button>
+                    </div>
+
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Announcement</th>
+                                    <th>Created Date</th>
+                                    <th>Created By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if ann %}
+                                    {% for i in ann %}
+                                        <tr>
+                                            <td>{{ i.notificat }}</td>
+                                            <td>{{ i.created }}</td>
+                                            <td>{{ i.facult_name }}</td>
+                                            <td>
+                                                <button class="btn btn-outline-danger btn-sm"
+                                                    onclick="confirmDelete('{% url 'Delete_Announcements' an_id=i.id %}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center alert alert-warning">
+                                            No announcements created
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> <!-- end notification table -->
+        </div>
+
+        <!-- Add Notification Modal -->
+        <div class="modal fade" id="addNotificationModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Notification</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="announcementForm" method="post" action="{% url 'save_announcements' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="notification">Type the announcement:</label>
+                                <textarea class="form-control" id="notification" rows="3" name="notify" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Announcement created date:</label>
+                                <input type="text" class="form-control" name="date" value="{{ current_date }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Announcement created By:</label>
+                                <input type="text" class="form-control" name="fname" value="{{ request.session.f_name }}" readonly>
+                            </div>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit Notification</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end Add Notification Modal -->
+    </div>
+
+    <!-- SweetAlert for Form Submission -->
+    <script>
+        document.getElementById("announcementForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to submit this announcement?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Submit"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Your announcement has been added.",
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById("announcementForm").submit();
+                    }, 2000);
+                }
+            });
+        });
+
+        // SweetAlert for Delete Confirmation
+        function confirmDelete(deleteUrl) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this announcement!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Delete"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleting...",
+                        text: "Please wait while the announcement is deleted.",
+                        icon: "info",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(() => {
+                        window.location.href = deleteUrl;
+                    }, 2000);
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+{% endblock %}

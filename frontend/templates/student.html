@@ -1,0 +1,266 @@
+<!doctype html>
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Student Details</title>
+
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<div class="col-md-12">
+  <div class="card shadow mb-4">
+    <div class="card-header">
+      <strong class="card-title">Add Student Details</strong>
+    </div>
+    <div class="card-body">
+      <form class="needs-validation" novalidate="" method="post" action="{% url 'save_Tstudent' %}" enctype="multipart/form-data" id="studentForm">
+        {% csrf_token %}
+        <div class="form-row">
+          <!-- Student Name Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentName">Student Name</label>
+            <input type="text" class="form-control" name="sname" id="studentName" placeholder="Enter Student Name" required="">
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter the student name.</div>
+          </div>
+
+          <!-- Student ID Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentID">Student ID / Register Number</label>
+            <input type="text" class="form-control" id="studentID" placeholder="Enter Student ID" required="" name="sid">
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter a valid Student ID.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Course Name Field (Dropdown) -->
+          <div class="col-md-6 mb-3">
+            <label for="courseName">Course Name</label>
+            <select class="form-control" id="courseName" required="" name="cname">
+              <option disabled selected>Select the Course</option>
+                {% for i in course %}
+              <option >{{i.name}}</option>
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback">Please select a valid course.</div>
+          </div>
+
+          <!-- Batch Name Field (Dropdown) -->
+          <div class="col-md-6 mb-3">
+            <label for="batchName">Batch Name</label>
+            <select class="form-control" id="batchName" required="" name="bname">
+              <option disabled selected>Select the Batch</option>
+                {% for i in course %}
+              <option >{{i.bname}}</option>
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback">Please select a valid batch.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Gender Field (Dropdown) -->
+          <div class="col-md-6 mb-3">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" required="" name="sgender">
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="invalid-feedback">Please select a valid gender.</div>
+          </div>
+
+          <!-- Date of Birth Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentDOB">Date of Birth</label>
+            <input type="date" class="form-control" id="studentDOB" required="" name="sdob">
+            <div class="invalid-feedback">Please enter a valid date of birth.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Phone Number Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentPhone">Mobile Number</label>
+            <input type="text" class="form-control" id="studentPhone" placeholder="Enter Mobile Number" required="" name="sphn">
+            <div class="invalid-feedback">Please enter a valid phone number.</div>
+          </div>
+
+          <!-- Email Address Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentEmail">Email Address</label>
+            <input type="email" class="form-control" id="studentEmail" placeholder="Enter Email" required="" name="semail">
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Address Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentAddress">Address</label>
+            <textarea class="form-control" id="studentAddress" placeholder="Enter address" required="" rows="3" name="sdes"></textarea>
+            <div class="invalid-feedback">Please enter a valid address.</div>
+          </div>
+
+          <!-- Parent's Email Field -->
+          <div class="col-md-6 mb-3">
+            <label for="parentEmail">Parent's Email</label>
+            <input type="email" class="form-control" id="parentEmail" placeholder="Enter Parent's Email" required="" name="p_email">
+            <div class="invalid-feedback">Please enter a valid parent's email address.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <div class="form-row">
+          <!-- Profile Picture Upload Field -->
+          <div class="col-md-6 mb-3">
+            <label for="studentImage">Upload Student Image</label>
+            <input type="file" class="form-control-file" id="studentImage" accept="image/*" required="" name="simage">
+            <div class="invalid-feedback">Please upload a student image.</div>
+          </div>
+        </div> <!-- /.form-row -->
+
+        <!-- Agree to Terms and Conditions -->
+        <div class="custom-control custom-checkbox mb-3">
+          <input type="checkbox" class="custom-control-input" id="termsCheck" required="">
+          <label class="custom-control-label" for="termsCheck">Agree to terms and conditions</label>
+          <div class="invalid-feedback">You must agree before submitting.</div>
+        </div>
+
+        <!-- Submit Button -->
+        <button class="btn btn-primary" type="submit">Submit Form</button>
+      </form>
+    </div> <!-- /.card-body -->
+  </div> <!-- /.card -->
+</div>
+
+<!-- JavaScript to Show SweetAlert After Submission -->
+<script>
+document.getElementById("studentForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Get all required form fields
+    const studentName = document.getElementById('studentName').value.trim();
+    const studentID = document.getElementById('studentID').value.trim();
+    const courseName = document.getElementById('courseName').value;
+    const batchName = document.getElementById('batchName').value;
+    const gender = document.getElementById('gender').value;
+    const dob = document.getElementById('studentDOB').value;
+    const phone = document.getElementById('studentPhone').value.trim();
+    const email = document.getElementById('studentEmail').value.trim();
+    const address = document.getElementById('studentAddress').value.trim();
+    const parentEmail = document.getElementById('parentEmail').value.trim();
+    const image = document.getElementById('studentImage').value;
+    const termsCheck = document.getElementById('termsCheck').checked;
+
+    // Validation checks
+    if (!studentName || !studentID || !courseName || !batchName || !gender || !dob ||
+        !phone || !email || !address || !parentEmail || !image || !termsCheck) {
+
+        Swal.fire({
+            title: "Error!",
+            text: "Please fill in all required fields and accept the terms and conditions.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        Swal.fire({
+            title: "Invalid Email",
+            text: "Please enter a valid email address.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return false;
+    }
+
+    if (!emailRegex.test(parentEmail)) {
+        Swal.fire({
+            title: "Invalid Parent Email",
+            text: "Please enter a valid parent email address.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return false;
+    }
+
+    // Phone number validation (assumes 10 digits)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phone)) {
+        Swal.fire({
+            title: "Invalid Phone Number",
+            text: "Please enter a valid 10-digit phone number.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return false;
+    }
+
+    // Date of birth validation (ensure not future date)
+    const currentDate = new Date();
+    const selectedDate = new Date(dob);
+    if (selectedDate > currentDate) {
+        Swal.fire({
+            title: "Invalid Date",
+            text: "Date of birth cannot be in the future.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return false;
+    }
+
+    // Image validation
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(image)) {
+        Swal.fire({
+            title: "Invalid File",
+            text: "Please upload an image file (JPG, JPEG, or PNG).",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return false;
+    }
+
+    // If all validations pass, show success message and submit
+    Swal.fire({
+        title: "Success!",
+        text: "All fields are valid. Saving student details...",
+        icon: "success",
+        confirmButtonText: "OK"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.submit(); // Submit the form
+        }
+    });
+});
+
+// Real-time validation feedback
+const inputs = document.querySelectorAll('input, select, textarea');
+inputs.forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+            this.classList.add('is-invalid');
+            this.classList.remove('is-valid');
+        } else {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        }
+    });
+});
+</script>
+
+</body>
+</html>
+{% endblock content %}
+

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+
+<head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Edit Student</title>
+
+  <!-- Custom CSS -->
+  <style>
+    .card-title {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50; /* Custom Green Button */
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+
+    /* Responsive Sidebar Collapse */
+    @media (max-width: 991px) {
+      #sidebar {
+        position: fixed;
+        z-index: 1050;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Main Panel -->
+  <div class="row">
+    <div class="col-md-8 mb-12 grid-margin stretch-card">
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <h4 class="card-title text-center font-weight-bold">Edit Student Details</h4>
+
+          <form id="studForm" method="POST" action="{% url 'update_student' s_id=stud.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="sname">Student Name</label>
+              <input type="text" class="form-control" id="sname" name="sname" value="{{stud.s_name}}" placeholder="Enter Student name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="sname">Student Id</label>
+              <input type="text" class="form-control" id="id" name="sid" placeholder="Enter Student Id" required value="{{stud.s_id}}">
+            </div>
+
+            <div class="form-group">
+              <label>Faculty Name</label>
+              <select class="form-control" name="fname">
+                <option disabled selected>{{stud.s_fac}}</option>
+                {% for d in fac %}
+                  <option>{{ d.f_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Course Name</label>
+              <select class="form-control" name="cname" required>
+                <option disabled selected>{{stud.c_name}}</option>
+                {% for d in cou %}
+                  <option>{{ d.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Batch Name</label>
+              <select class="form-control" name="bname">
+                <option disabled selected>{{stud.b_name}}</option>
+                {% for d in cou %}
+                  <option>{{ d.bname }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <select class="form-control" name="sgender">
+                <option disabled selected>{{stud.s_gender}}</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Others</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input type="date" class="form-control" id="dob" value="{{stud.s_dob}}" name="sdob" placeholder="Enter your Date of Birth" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phn">Phone Number</label>
+              <input type="tel" class="form-control" id="phn" name="sphn" value="{{stud.s_phn}}" placeholder="Enter Phone Number" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" class="form-control" id="email" name="semail" placeholder="Enter Email Address" required value="{{stud.s_email}}">
+            </div>
+
+            <div class="form-group">
+              <label for="deptDescription">Address</label>
+              <textarea class="form-control" id="deptDescription" name="sdes" rows="3" placeholder="Enter your address" required>{{stud.s_add}}</textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="pemail">Parents Email Address</label>
+              <input type="email" class="form-control" id="pemail" name="p_email" placeholder="Enter Parents Email Address" required value="{{stud.sp_email}}">
+            </div>
+
+            <div class="container upload-container">
+              <div class="form-group">
+                <label for="imageUpload" class="form-label">Upload Student Profile Picture</label>
+                <img src="{{stud.s_pic.url}}" height="80px" width="80px">
+                <input class="form-control" type="file" id="imageUpload" name="simage" accept="image/*">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary d-block mx-auto" style="background-color:#5454C4; width: 150px; border-radius:5px;">Update</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+   <script>
+    // Function to validate the form
+    document.getElementById('studForm').addEventListener('submit', function(event) {
+      event.preventDefault();  // Prevent form submission
+
+      // Check if all required fields are filled
+      let formIsValid = true;
+      const requiredFields = document.querySelectorAll('[required]');
+
+      requiredFields.forEach(function(field) {
+        if (!field.value.trim()) {
+          formIsValid = false;
+        }
+      });
+
+      if (formIsValid) {
+        // Show SweetAlert for successful form submission
+        Swal.fire({
+          title: 'Success!',
+          text: 'Student details have been updated successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            document.getElementById('studForm').submit();  // Submit form if user confirms
+          }
+        });
+      } else {
+        // Show SweetAlert for validation error
+        Swal.fire({
+          title: 'Error!',
+          text: 'Please fill in all required fields.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
+{% endblock %}

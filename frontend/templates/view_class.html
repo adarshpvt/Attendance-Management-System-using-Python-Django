@@ -1,0 +1,119 @@
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mark Attendance</title>
+    <!-- Include SweetAlert CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+    <style>
+        /* Style for checkboxes */
+        .custom-control-input:checked.present ~ .custom-control-label::before {
+            background-color: blue;
+            border-color: blue;
+        }
+        .custom-control-input:checked.absent ~ .custom-control-label::before {
+            background-color: red;
+            border-color: red;
+        }
+
+        /* Style for profile pictures */
+        .profile-picture {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        /* Right-aligned download button */
+        .download-btn {
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <!-- Class Details and Download Button -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-lg font-semibold">Batch Details of {{ course_name }} {{ batch_name }}</h2>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Course Name:</strong> {{ course_name }}</p>
+                                <p><strong>Batch Name:</strong> {{ batch_name }}</p>
+                                <p><strong>Faculty Name:</strong> {{ faculty_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Student List -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Parent Email</th>
+                                <th>Profile Picture</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                                <tr>
+                                    <td>{{ i.s_name }}</td>
+                                    <td>{{ i.s_id }}</td>
+                                    <td>{{ i.s_phn }}</td>
+                                    <td>{{ i.s_email }}</td>
+                                    <td>{{ i.sp_email }}</td>
+                                    <td><img src="{{ i.s_pic.url }}" class="profile-picture"></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end" style="float:right">
+                        <button onclick="confirmDownload()" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDownload() {
+    swal({
+        title: "Download PDF",
+        text: "Are you sure you want to download this PDF?",
+        icon: "info",
+        buttons: ["Cancel", "Yes, Download!"],
+        dangerMode: false,
+    })
+    .then((willDownload) => {
+        if (willDownload) {
+            // If user confirms, redirect to the download URL
+            window.location.href = "{% url 'course_filterpdf' cou_name=course_name %}?download_pdf=1";
+
+            // Show success message after starting download
+            swal("Success!", "Your download has started!", "success");
+        }
+    });
+}
+</script>
+
+</body>
+</html>
+{% endblock content %}

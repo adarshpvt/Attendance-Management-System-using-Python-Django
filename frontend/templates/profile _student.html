@@ -1,0 +1,142 @@
+<!doctype html>
+{% extends 'student_dashboard.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Profile - Tiny Dashboard</title>
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #212529; /* Dark background for the body */
+            color: #ffffff; /* Light text color */
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #343a40; /* Dark background for the card */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #444; /* Darker border */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+        .header .name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800; /* Highlight color */
+        }
+        .header .degree {
+            font-size: 14px;
+            color: #ccc; /* Lighter color for degree */
+        }
+        .profile-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .profile-info .left, .profile-info .right {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+        .profile-info .left label, .profile-info .right label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #ffffff; /* Light text color for labels */
+        }
+        .profile-info .left p, .profile-info .right p {
+            margin: 0 0 10px 0;
+            color: #ccc; /* Lighter color for text */
+        }
+        .actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .actions button {
+            background-color: #007bff; /* Primary button color */
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .actions button:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+        @media (max-width: 600px) {
+            .profile-info .left, .profile-info .right {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img alt="Profile photo of {{ student_details.s_name }}" src="https://storage.googleapis.com/a1aa/image/L2b6TTz0Pv5GL9lNPohwAsILJe1OGVxff8EkEUPRYV4fF3GQB.jpg" />
+            <div>
+                <div class="name">{{ student_details.s_name }}</div>
+                <div class="degree">{{ student_details.degree }}</div>
+            </div>
+        </div>
+        <div class="profile-info">
+            <div class="left">
+                <label>Name</label>
+                <p>{{ student_details.s_name }}</p>
+                <label>College</label>
+                <p>{{ student_details.college }}</p>
+                <label>Roll No.</label>
+                <p>{{ student_details.roll_no }}</p>
+                <label>Program</label>
+                <p>{{ student_details.program }}</p>
+                <label>Stream</label>
+                <p>{{ student_details.stream }}</p>
+                <label>Enrollment Year</label>
+                <p>{{ student_details.enrollment_year }}</p>
+                <label>Backlogs</label>
+                <p>{{ student_details.backlogs                <label>Backlogs</label>
+                <p>{{ student_details.backlogs }}</p>
+                <label>Current Percentage</label>
+                <p>{{ student_details.current_percentage }}</p>
+            </div>
+            <div class="right">
+                <label>Email</label>
+                <p>{{ student_details.email }}</p>
+                <label>Phone No.</label>
+                <p>{{ student_details.phone }}</p>
+                <label>Sex</label>
+                <p>{{ student_details.sex }}</p>
+                <label>D.O.B</label>
+                <p>{{ student_details.dob }}</p>
+                <label>Nationality</label>
+                <p>{{ student_details.nationality }}</p>
+                <label>Current Address</label>
+                <p>{{ student_details.current_address }}</p>
+                <label>Permanent Address</label>
+                <p>{{ student_details.permanent_address }}</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+
+<head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Add Student</title>
+
+
+  <style>
+    .card-title {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50; /* Custom Green Button */
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+
+    /* Responsive Sidebar Collapse */
+    @media (max-width: 991px) {
+      #sidebar {
+        position: fixed;
+        z-index: 1050;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+
+      <!-- Main Panel -->
+
+
+          <div class="row">
+            <div class="col-md-8 mb-12  ">
+              <div class="card shadow mb-4">
+                <div class="card-body">
+                  <h4 class="card-title text-center font-weight-bold">Add Student Details</h4>
+
+                  <form method="POST" action="{% url 'save_student' %}" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                       <div class="form-group">
+                      <label for="sname"> Student Name </label>
+                      <input type="text" class="form-control" id="sname" name="sname" placeholder="Enter Student name" required >
+                    </div>
+                       <div class="form-group">
+                      <label for="sname"> Student Id </label>
+                      <input type="text" class="form-control" id="id" name="sid" placeholder="Enter Student Id" required >
+                    </div>
+                      <div class="form-group">
+                  <label>Faculty Name </label>
+
+                       <select class="form-control"  name="fname" required>
+                   <option  disabled selected>Select a Faculty Name</option>
+
+       {% for d in fac %}
+       <option>{{ d.f_name}}</option>
+    {% endfor %}
+  </select>
+                   </div>
+
+                       <div class="form-group">
+                  <label>Course Name</label>
+
+                       <select class="form-control"  name="cname" required>
+                   <option  disabled selected>Select a Course</option>
+
+       {% for d in cou %}
+       <option>{{ d.name }}</option>
+    {% endfor %}
+  </select>
+                   </div>
+                        <div class="form-group">
+                  <label>Batch Name</label>
+
+                       <select class="form-control"  name="bname" required>
+                   <option  disabled selected>Select a Batch</option>
+
+       {% for d in cou %}
+       <option>{{ d.bname }}</option>
+    {% endfor %}
+  </select>
+                   </div>
+                      <div class="form-group">
+                  <label>Gender</label>
+                   <select class="form-control"  name="sgender" required>
+                   <option  disabled selected>Select your gender</option>
+
+
+       <option>Male</option>
+       <option>Female</option>
+       <option>Others</option>
+
+
+
+  </select>
+</div>
+
+                        <div class="form-group">
+                      <label for="dob"> Date of Birth</label>
+                      <input type="date" class="form-control" id="dob" name="sdob" placeholder="Enter your Date of Birth" required >
+                    </div>
+                       <div class="form-group">
+                      <label for="phn"> Phone Number</label>
+                      <input type="tel" class="form-control" id="phn" name="sphn" placeholder="Enter Phone Number" required >
+                    </div>
+                      <div class="form-group">
+                      <label for="email"> Email Address</label>
+                      <input type="email" class="form-control" id="email" name="semail" placeholder="Enter Email Address" required >
+                    </div>
+                        <div class="form-group">
+                      <label for="deptDescription">Address</label>
+                      <textarea class="form-control" id="deptDescription" name="sdes" rows="3" placeholder="Enter your address "></textarea>
+                    </div>
+                      <div class="form-group">
+                      <label for="pemail">Parents Email Address</label>
+                      <input type="email" class="form-control" id="pemail" name="p_email" placeholder="Enter Parents Email Address" required >
+                    </div>
+
+                      <div class="container upload-container">
+        <div class="form-group">
+            <label for="imageUpload" class="form-label">Upload Student Profile Picture</label>
+            <input class="form-control" type="file" id="imageUpload" name="simage" accept="image/*" required>
+        </div>
+                      </div>
+                    <button type="submit" class="btn btn-primary  d-block mx-auto" style="background-color:#5454C4; width: 150px; border-radius:5px;">  Submit
+</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        <!-- Footer -->
+
+
+
+  <!-- Plugins: JS -->
+
+</body>
+</html>
+
+{% endblock %}

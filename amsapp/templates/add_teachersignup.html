@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Signup</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .card-title {
+            font-weight: bold;
+            color: #5454C4;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function validateForm() {
+            var password = document.getElementById("tpassword").value;
+            var repeatPassword = document.getElementById("trepeatpassword").value;
+            var tname = document.getElementById("tname").value;
+            var temail = document.getElementById("temail").value;
+            var errorMessage = document.getElementById("error-message");
+
+            // Check if all fields are filled
+            if (tname === "" || temail === "" || password === "" || repeatPassword === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please fill in all fields!'
+                });
+                return false; // Prevent form submission
+            }
+
+            // Check if passwords match
+            if (password !== repeatPassword) {
+                errorMessage.style.display = "block"; // Show error message
+                errorMessage.textContent = "Passwords do not match!"; // Set error text
+                return false; // Prevent form submission
+            } else {
+                errorMessage.style.display = "none"; // Hide error message if passwords match
+                return true; // Allow form submission
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-8 mb-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Teacher Signup</h4>
+                    <form id="teacherForm" method="POST" action="{% url 'save_teacher_signup' %}" onsubmit="return validateForm()">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="tname">Teacher Name</label>
+                            <input type="text" class="form-control" id="tname" name="tname" placeholder="Enter Teacher Name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="temail">Teacher Email</label>
+                            <input type="email" class="form-control" id="temail" name="temail" placeholder="Enter Email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tpassword">Password</label>
+                            <input type="password" class="form-control" id="tpassword" name="tpass" placeholder="Enter Password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trepeatpassword">Repeat Password</label>
+                            <input type="password" class="form-control" id="trepeatpassword" name="trepass" placeholder="Repeat Password" required>
+                            <small id="error-message" class="error-message">Passwords do not match!</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary d-block mx-auto" style="background-color:#5454C4; width: 150px; border-radius:5px;">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script>
+        document.getElementById("teacherForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Stop default submission
+
+            let form = this;
+            let inputs = form.querySelectorAll("input, select, textarea");
+            let isValid = true;
+            let emptyField = null;
+
+            // Check if all required fields are filled
+            inputs.forEach(input => {
+                if (input.hasAttribute("required") && !input.value.trim()) {
+                    isValid = false;
+                    emptyField = input;
+                }
+            });
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "All fields are required. Please fill them before submitting.",
+                    confirmButtonColor: "#d33"
+                }).then(() => {
+                    if (emptyField) {
+                        emptyField.focus();
+                    }
+                });
+                return;
+            }
+
+            // Confirm before submission
+            Swal.fire({
+                title: "Confirm Submission?",
+                text: "Are you sure you want to submit the teacher details?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Submit"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Processing...",
+                        text: "Please wait while your details are being saved.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000 // Simulate a processing delay
+                    });
+
+                    setTimeout(() => {
+                        form.submit(); // Submit only if confirmed
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

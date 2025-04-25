@@ -1,0 +1,96 @@
+<!doctype html>
+{% extends 'admin.html' %}
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Course List</title>
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .card-title {
+            font-weight: bold;
+            color: #5454C4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-md-8 mb-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center font-weight-bold">Add Course Details</h4>
+                    <form id="courseForm" method="POST" action="{% url 'save_course' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="cname">Course Name</label>
+                            <input type="text" class="form-control" id="cname" name="cname" placeholder="Enter Course name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bname">Batch Name</label>
+                            <input type="text" class="form-control" id="bname" name="bname" placeholder="Enter Batch name">
+                        </div>
+
+                        <button type="button" onclick="validateAndSubmit()" class="btn btn-primary d-block mx-auto"
+                                style="background-color:#5454C4; width: 150px; border-radius:5px;">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function validateAndSubmit() {
+            var cname = document.getElementById("cname").value.trim();
+            var bname = document.getElementById("bname").value.trim();
+
+            if (cname === "" || bname === "") {
+                Swal.fire({
+                    title: "Error!",
+                    text: "All fields are required.",
+                    icon: "error",
+                    confirmButtonColor: "#d33"
+                });
+                return; // Stop submission
+            }
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to submit the course details?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, submit it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("courseForm").submit();
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+{% endblock %}

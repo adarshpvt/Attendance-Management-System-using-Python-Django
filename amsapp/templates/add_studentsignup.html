@@ -1,0 +1,168 @@
+<!doctype html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Student Signup</title>
+
+    <!-- SweetAlert2 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .card-title {
+            font-weight: bold;
+            color: #5454C4;
+        }
+        .btn-submit {
+            background-color: #5454C4;
+            width: 150px;
+            border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+
+    <script>
+        function validateForm() {
+            var password = document.getElementById("spassword").value;
+            var repeatPassword = document.getElementById("srepassword").value;
+            var sname = document.getElementById("sname").value;
+            var semail = document.getElementById("semail").value;
+            var errorMessage = document.getElementById("error-message");
+
+            // Check if all fields are filled
+            if (sname === "" || semail === "" || password === "" || repeatPassword === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please fill in all fields!'
+                });
+                return false; // Prevent form submission
+            }
+
+            // Check if passwords match
+            if (password !== repeatPassword) {
+                errorMessage.style.display = "block"; // Show error message
+                errorMessage.textContent = "Passwords do not match!"; // Set error text
+                return false; // Prevent form submission
+            } else {
+                errorMessage.style.display = "none"; // Hide error message if passwords match
+                return true; // Allow form submission
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-md-8 md-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Student Signup</h4>
+                    <form id="ssForm" method="POST" action="{% url 'save_student_signup' %}" onsubmit="return validateForm()">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="sname">Student Name</label>
+                            <input type="text" class="form-control" id="sname" name="sname" placeholder="Enter Student Name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="semail">Student Email</label>
+                            <input type="email" class="form-control" id="semail" name="semail" placeholder="Enter Student Email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spassword">Student Password</label>
+                            <input type="password" class="form-control" id="spassword" name="spassword" placeholder="Enter Password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="srepassword">Repeat Password</label>
+                            <input type="password" class="form-control" id="srepassword" name="srepass" placeholder="Repeat Password" required>
+                            <small id="error-message" class="error-message">Passwords do not match!</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit d-block mx-auto">Save Details</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.getElementById("ssForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Stop default submission
+
+      let form = this;
+      let inputs = form.querySelectorAll("input, select, textarea");
+      let isValid = true;
+      let emptyField = null;
+
+      // Check if all required fields are filled
+      inputs.forEach(input => {
+        if (input.hasAttribute("required") && !input.value.trim()) {
+          isValid = false;
+          emptyField = input;
+        }
+      });
+
+      if (!isValid) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "All fields are required. Please fill them before submitting.",
+          confirmButtonColor: "#d33"
+        }).then(() => {
+          if (emptyField) {
+            emptyField.focus();
+          }
+        });
+        return;
+      }
+
+      // Confirm before submission
+      Swal.fire({
+        title: "Confirm Submission?",
+        text: "Are you sure you want to submit the form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Processing...",
+            text: "Please wait while your details are being saved.",
+            icon: "info",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timer: 2000 // Simulate a processing delay
+          });
+
+          setTimeout(() => {
+            form.submit(); // Submit the form only after confirmation
+          }, 2000);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Sliding Sign-In Page for Students and Teachers">
+    <meta name="author" content="Author Name">
+    <link rel="icon" href="favicon.ico">
+    <title>AMS Sign-In Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@100;200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            background-color: #4B5563; /* Gray-700 */
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        .slider-button {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background-color: #3B82F6; /* Blue-500 */
+            border-radius: 25px;
+            transition: left 0.3s;
+        }
+        .slider-button.student {
+            left: 0;
+        }
+        .slider-button.teacher {
+            left: 50%;
+        }
+        .input-field {
+            border: 2px solid #3B82F6; /* Blue-500 */
+            border-radius: 5px;
+            background-color: #6B7280; /* Gray-600 */
+        }
+        .input-field:focus {
+            border-color: #3B82F6; /* Blue-500 */
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-xs p-6 space-y-6 bg-gray-800 rounded-lg shadow-lg">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold">AMS Sign-In</h2>
+            </div>
+            <div class="slider mb-4">
+                <div id="slider-button" class="slider-button student"></div>
+                <button id="student-tab" class="absolute left-0 w-1/2 h-full text-white focus:outline-none">Student</button>
+                <button id="teacher-tab" class="absolute right-0 w-1/2 h-full text-white focus:outline-none">Teacher</button>
+            </div>
+            <div id="student-content" class="tab-content active">
+                <form method="post" action="{% url 'signin_student' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" name="user" placeholder="Username" class="w-full px-10 py-2 input-field focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" name="pass" placeholder="Password" class="w-full px-10 py-2 input-field focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full py-2 bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Sign In as Student</button>
+                    <div class="text-center mt-2">
+                        <span>Create an account? </span>
+                        <a href="signup" class="text-blue-500 hover:underline">Sign Up</a>
+                    </div>
+                </form>
+            </div>
+
+
+
+                        <div id="teacher-content" class="tab-content">
+                <form method="post" action="{% url 'signin_op' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" name="user" placeholder="Username" class="w-full px-10 py-2 input-field focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" name="pass" placeholder="Password" class="w-full px-10 py-2 input-field focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full py-2 bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Sign In as Teacher</button>
+                    <div class="text-center mt-2">
+                        <span>Create an account? </span>
+                        <a href="signup" class="text-blue-500 hover:underline">Sign Up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('student-tab').addEventListener('click', function() {
+            document.getElementById('student-content').classList.add('active');
+            document.getElementById('teacher-content').classList.remove('active');
+            document.getElementById('slider-button').classList.add('student');
+            document.getElementById('slider-button').classList.remove('teacher');
+        });
+
+        document.getElementById('teacher-tab').addEventListener('click', function() {
+            document.getElementById('teacher-content').classList.add('active');
+            document.getElementById('student-content').classList.remove('active');
+            document.getElementById('slider-button').classList.add('teacher');
+            document.getElementById('slider-button').classList.remove('student');
+        });
+
+
+    </script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                swal({
+                    title: "{{ message }}",
+                    icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    button: "Okay",
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

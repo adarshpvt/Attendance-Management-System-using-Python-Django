@@ -1,0 +1,163 @@
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <style>
+        /* Custom styling */
+        .radial-chart-container {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: auto;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90px !important;
+            height: 90px !important;
+        }
+        .percentage-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <form method="POST" action="{% url 'save_attendance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="course_name" value="{{ course_name }}">
+        <input type="hidden" name="batch_name" value="{{ batch_name }}">
+        <input type="hidden" name="faculty_name" value="{{ faculty_name }}">
+
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold">Attendance Details for {{ course_name }}</h2>
+                <p><strong>Course Name:</strong> {{ course_name }}</p>
+
+                <p><strong>Batch Name:</strong> {{ batch_name }}</p>
+                <p><strong>Faculty Name:</strong> {{ faculty_name }}</p>
+
+                <h4 class="mt-4">Student Attendance Summary</h4>
+                {% if attendance_stats %}
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Total Classes</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Attendance %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student_id, stats in attendance_stats.items %}
+                                <tr>
+                                    <td>{{ stats.student_name }}</td>
+                                    <td>{{ student_id }}</td>
+                                    <td>{{ stats.total_classes }}</td>
+                                    <td>{{ stats.total_present }}</td>
+                                    <td>{{ stats.total_absent }}</td>
+                                    <td>
+                                        <div class="radial-chart-container">
+                                            <canvas id="chart_{{ student_id }}" width="50" height="50"></canvas>
+                                            <div class="percentage-label">{{ stats.attendance_percentage|floatformat:2 }}%</div>
+                                        </div>
+                                        <script>
+                                            var ctx = document.getElementById('chart_{{ student_id }}').getContext('2d');
+                                            new Chart(ctx, {
+                                                type: 'doughnut',
+                                                data: {
+                                                    datasets: [{
+                                                        data: [{{ stats.attendance_percentage|floatformat:2 }}, {{ stats.absent_percentage|floatformat:2 }}],
+                                                        backgroundColor: ['#007bff', '#dc3545'],
+                                                        borderWidth: 0
+                                                    }]
+                                                },
+                                                options: {
+                                                    responsive: true,
+                                                    cutoutPercentage: 70,
+                                                    legend: { display: false },
+                                                    tooltips: { enabled: false }
+                                                }
+                                            });
+                                        </script>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- PDF Download Button -->
+
+                {% else %}
+                    <p class="text-center text-danger mt-4">No attendance records found for today.</p>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let pdfBtn = document.getElementById('downloadPdfBtn');
+
+    if (pdfBtn) {
+        pdfBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Download Attendance PDF',
+                text: 'Are you sure you want to download the attendance PDF?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, download it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Generating PDF',
+                        text: 'Please wait while we generate your PDF...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    window.location.href = pdfBtn.href;
+
+                    setTimeout(() => {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Your PDF has been downloaded successfully.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }, 2000);
+                }
+            });
+        });
+    }
+});
+</script>
+
+</body>
+</html>
+{% endblock content %}

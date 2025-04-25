@@ -1,0 +1,150 @@
+<!doctype html>
+{% extends 'index.html' %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>View Student Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <style>
+        .card {
+            height: 350px; /* Set a fixed height for the card */
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            justify-content: space-between; /* Space out items */
+            height: 100%; /* Make the body take full height of the card */
+        }
+
+        .avatara-img {
+            width: 100px; /* Set a fixed width for the image */
+            height: 100px; /* Set a fixed height for the image */
+             /* Ensure the image covers the area without distortion */
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row align-items-center my-4">
+        <div class="col">
+            <h2 class="h3 mb-0 page-title text-center"> Student Profiles</h2>
+        </div>
+    </div>
+    <div class="row">
+        {% for i in student %}
+        <div class="col-md-3 mb-4"> <!-- Adjusted to col-md-3 for narrower cards -->
+            <div class="card shadow" style="height: 300px;"> <!-- Set a fixed height for the card -->
+                <div class="card-body text-center">
+                    <div class="avatar avatar-lg mt-4">
+                        <a href="">
+                            <img src="{{ i.s_pic.url }}" alt="Profile Picture" class="avatara-img rounded-circle" > <!-- Adjusted image size -->
+                        </a>
+                    </div>
+                    <div class="card-text my-2">
+                        <strong class="card-title my-0">{{ i.s_name }}</strong>
+                        <p class="small text-muted mb-0">{{ i.s_id }}</p>
+                        <p class="small text-muted mb-0">{{ i.c_name }}</p>
+                        <p class="small text-muted mb-0">{{ i.b_name }}</p>
+                    </div>
+                </div> <!-- ./card-text -->
+                <div class="card-footer text-center"> <!-- Centered the footer content -->
+                    <button type="button" class="btn btn-outline-primary btn-sm me-1" onclick="viewStudent('{{ i.s_id }}', '{{ i.s_name }}', '{{ i.c_name }}', '{{ i.b_name }}', '{{ i.s_gender }}', '{{ i.s_dob }}', '{{ i.s_phn }}', '{{ i.s_email }}', '{{ i.s_add }}', '{{ i.sp_email }}', '{{ i.s_pic.url }}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('{% url 'delete_students' ss_id=i.id %}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div> <!-- /.card-footer -->
+            </div>
+        </div> <!-- .col -->
+        {% endfor %}
+    </div> <!-- .row -->
+    <nav aria-label="Table Paging" class="my-3">
+        <ul class="pagination justify-content-end mb-0">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</div> <!-- .container-fluid -->
+
+<!-- Student Details Modal -->
+<div class="modal fade" id="studentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="studentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="studentDetailsModalLabel">Student Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <img id="modalProfilePicture" src="" alt="Profile Picture" class="rounded-circle" width="100" height="100">
+                </div>
+                <p><strong>Name:</strong> <span id="modalStudentName"></span></p>
+                <p><strong>Student ID:</strong> <span id="modalStudentID"></span></p>
+                <p><strong>Course Name:</strong> <span id="modalCourseName"></span></p>
+                <p><strong>Batch Name:</strong> <span id="modalBatchName"></span></p>
+                <p><strong>Gender:</strong> <span id="modalGender"></span></p>
+                <p><strong>Date of Birth:</strong> <span id="modalDOB"></span></p>
+                <p><strong>Mobile Number:</strong> <span id="modalPhone"></span></p>
+                <p><strong>Email Address:</strong> <span id="modalEmail"></span></p>
+                <p><strong>Address:</strong> <span id="modalAddress"></span></p>
+                <p><strong>Parent's Email:</strong> <span id="modalParentEmail"></span></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<script>
+    function viewStudent(id, name, course, batch, gender, dob, phone, email, address, parentEmail, profilePicture) {
+        // Populate the modal with the student data
+        document.getElementById('modalStudentName').innerText = name;
+        document.getElementById('modalStudentID').innerText = id;
+        document.getElementById('modalCourseName').innerText = course;
+        document.getElementById('modalBatchName').innerText = batch;
+        document.getElementById('modalGender').innerText = gender;
+        document.getElementById('modalDOB').innerText = dob;
+        document.getElementById('modalPhone').innerText = phone;
+        document.getElementById('modalEmail').innerText = email;
+        document.getElementById('modalAddress').innerText = address;
+        document.getElementById('modalParentEmail').innerText = parentEmail;
+        document.getElementById('modalProfilePicture').src = profilePicture;
+
+        // Show the modal
+        $('#studentDetailsModal').modal('show');
+    }
+
+    function confirmDelete(url) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this student record!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                window.location.href = url; // Redirect to the delete URL
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+{% endblock content %}

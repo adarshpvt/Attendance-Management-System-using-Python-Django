@@ -1,0 +1,223 @@
+<!doctype html>
+{% extends 'index.html' %}
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>View Student Leave</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <style>
+        #notification-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .notification {
+            background-color: #4caf50; /* Green background for success */
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* Start hidden */
+            transform: translateY(20px); /* Start slightly below */
+            animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 2.5s; /* Slide in and fade out */
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-container" style="display: none;"></div>
+
+    <div class="row">
+        <!-- Small table -->
+        <div class="col-md-12 my-4">
+            <h2 class="h4 mb-1">View Student Leave</h2>
+
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="toolbar">
+                        <form class="form" onsubmit="event.preventDefault(); searchFunction();">
+                            <div class="form-row">
+                                <div class="form-group col-auto mr-auto">
+                                    <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
+                                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
+                                        <option value="">...</option>
+                                        <option value="1">12</option>
+                                        <option value="2" selected>32</option>
+                                        <option value="3">64</option>
+                                        <option value="4">128</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-auto">
+                                    <label for="search" class="sr-only">Search</label>
+                                    <input type="text" class="form-control" id="search1" value="" placeholder="Search">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Course Name</th>
+                                    <th>Faculty Name</th>
+                                    <th>Leave Date</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in std_leave %}
+                                <tr id="leave_{{ i.id }}">
+                                    <td><small class="mb-0 text-muted w-25">{{ i.l_sname }}</small></td>
+                                    <td><small class="mb-0 text-muted w-25">{{ i.l_cname }}</small></td>
+                                    <td><small class="mb-0 text-muted">{{ i.l_fname }}</small></td>
+                                    <td><small class="mb-0 text-muted">                                    {{ i.l_ndate }}</small></td>
+                                    <td><small class="mb-0 text-muted">{{ i.l_reason }}</small></td>
+                                    <td><small class="mb-0 text-muted status">{{ i.status }}</small></td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <button type="button" class="btn mb-2 btn-outline-success" onclick="approveLeave('{{ i.id }}', '{{ i.l_cname }}', '{{ i.l_batch }}')">
+                                                Approve
+                                            </button>&nbsp;&nbsp;
+                                            <button type="button" class="btn mb-2 btn-outline-danger" onclick="denyLeave('{{ i.id }}', '{{ i.l_cname }}', '{{ i.l_batch }}')">
+                                                Deny
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <nav aria-label="Table Paging" class="mb-0 text-muted">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- customized table -->
+    </div> <!-- end section -->
+
+    <script>
+        // Include CSRF token in a JavaScript variable
+        const csrfToken = '{{ csrf_token }}';  // Ensure this is included in your template context
+
+        function approveLeave(leaveId, courseName, batchName) {
+            swal({
+                title: "Leave Approved!",
+                text: "The leave has been successfully approved.",
+                icon: "success",
+                button: "OK",
+            }).then(() => {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "update_leave_status" %}',
+                    data: {
+                        'leave_id': leaveId,
+                        'status': 'Approved',
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#leave_' + leaveId + ' .status').text('Approved');
+                            const message = `Your leave for the course "${courseName}" in batch "${batchName}" has been approved.`;
+                            addNotification(message);
+                        } else {
+                            console.error(response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error updating leave status: " + error);
+                    }
+                });
+            });
+        }
+
+        function denyLeave(leaveId, courseName, batchName) {
+            swal({
+                title: "Leave Denied!",
+                text: "The leave has been denied.",
+                icon: "error",
+                button: "OK",
+            }).then(() => {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "update_leave_status" %}',
+                    data: {
+                        'leave_id': leaveId,
+                        'status': 'Denied',
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#leave_' + leaveId + ' .status').text('Denied');
+                            const message = `Your leave for the course "${courseName}" in batch "${batchName}" has been denied.`;
+                            addNotification(message);
+                        } else {
+                            console.error(response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error updating leave status: " + error);
+                    }
+                });
+            });
+        }
+
+        function addNotification(message) {
+            // Create a new notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerText = message;
+
+            // Append the notification to the container
+            const container = document.getElementById('notification-container');
+            container.appendChild(notification);
+
+            // Show the notification
+            $(notification).fadeIn(500).delay(3000).fadeOut(500, function() {
+                // Remove the notification after fading out
+                $(this).remove();
+            });
+        }
+    </script>
+</body>
+</html>
+{% endblock content %}

@@ -1,0 +1,152 @@
+<!doctype html>
+{% extends 'admin.html' %}
+{% block content %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Student Signup</title>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #5454C4;
+        }
+
+        .btn-submit {
+            background-color: #5454C4;
+            width: 150px;
+            border-radius: 5px;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: #4747B3;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-md-8 md-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Edit Student Signup</h4>
+                    <form id="studentForm" method="POST" action="{% url 'update_student_signup' ss_id=std.id %}">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="sname">Student Name</label>
+                            <input type="text" class="form-control" id="sname" name="sname" placeholder="Enter Student Name" required value="{{std.studnt_name}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="semail">Student Email</label>
+                            <input type="email" class="form-control" id="semail" name="semail" placeholder="Enter Student Email" required value="{{std.studnt_email}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spassword">Student Password</label>
+                            <input type="password" class="form-control" id="spassword" name="spassword" placeholder="Enter Password" required value="{{std.studnt_pass}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="srepassword">Repeat Password</label>
+                            <input type="password" class="form-control" id="srepassword" name="srepass" placeholder="Repeat Password" required value="{{std.studnt_repass}}">
+                            <small id="error-message" class="error-message">Passwords do not match!</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit d-block mx-auto">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            var password = document.getElementById("spassword").value;
+            var repeatPassword = document.getElementById("srepassword").value;
+            var errorMessage = document.getElementById("error-message");
+
+            if (password !== repeatPassword) {
+                errorMessage.style.display = "block";
+                return false; // Prevent form submission
+            } else {
+                errorMessage.style.display = "none";
+                return true; // Allow form submission
+            }
+        }
+
+        // Real-time validation while typing
+        document.getElementById("srepassword").addEventListener("input", function () {
+            validateForm();
+        });
+
+        // SweetAlert confirmation before form submission
+        document.getElementById("studentForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default submission
+
+            if (!validateForm()) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Passwords do not match! Please check again.",
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to update the student details?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Update"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Updating...",
+                        text: "Please wait while we update the details.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById("studentForm").submit(); // Submit the form after confirmation
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+{% endblock %}
